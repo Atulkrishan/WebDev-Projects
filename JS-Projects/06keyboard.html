@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Checker</title>
+</head>
+<style>
+    body{
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .keyboard{
+        height: 100px;
+        width: 400px;
+        border:5px solid black;
+        background-color: whitesmoke;
+    }
+</style>
+<body>
+    <div class="keyboard1"></div>
+</body>
+<script>
+    const key = document.querySelector(".keyboard1")
+    document.addEventListener("keydown",function(event){
+        key.innerHTML = `
+        <div>
+<table border="2" class="keyboard" cellpadding="5">
+  <tr>
+    <th>Key</th>
+    <th>Keycode</th>
+    <th>Code</th>
+  </tr>
+  <tr>
+    <td> ${event.key==" "?"SPACE":event.key}</td>
+    <td> ${event.keyCode}</td>
+    <td>${event.code}</td>
+  </tr>
+</table>
+</div>`
+    })
+</script>
+</html>

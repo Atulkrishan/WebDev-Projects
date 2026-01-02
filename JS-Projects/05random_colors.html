@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlimited Colors</title>
+    <style>
+        body{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .larger{
+            height: 200px;
+            width: 300px;
+            background-color: white;
+            border : 4px solid black;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            font-weight: 800;
+            align-items: center;
+        }
+        button{
+            height: 45px;
+            width: 120px;
+            font-weight: 900;
+            border: none;
+            margin-right: 10px;
+            border-radius: 22px;
+            font-size: 20px;
+            background-color: grey;
+            transition: all 0.5s ease-in-out 0ms;
+        }
+        button:hover{
+            background-color: black;
+            font-weight: 800;
+            color: white;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="larger">
+        <div class="inner1">
+        <p class="colorRatio1"></p>
+        <p class="colorRatio2"></p>
+        </div>
+        <div class="inner2">
+        <button class="start">Start</button>
+        <button class="stop">Stop</button>
+        </div>
+    </div>
+</body>
+<script>
+    let p1 = document.querySelector('.colorRatio1');
+    let p2 = document.querySelector('.colorRatio2');
+    let display = document.querySelector('.larger');
+    let randomColor = function(){
+        const options = "0123456789ABCDEF";
+        let ans = '#';
+        for(let i = 0 ; i < 6; i++){
+            ans+=options[Math.floor(Math.random()*16)];
+        }
+        return ans;
+    }
+    const colorPerGenerator = function(str){
+        let numArr = [];
+        for (let i = 1; i <= str.length; i++) {
+            if (str[i] =='A' || str[i] ==='B'|| str[i] ==='C'||
+            str[i]==='D'|| str[i]==='E'||str[i] ==='F'){
+                numArr.push(Number(str.charCodeAt(i)-55));
+            }
+            else numArr.push(Number(str[i]));
+        } 
+        let num1 = ((numArr[0]*16)+numArr[1])*100/255;     
+        let num2 =((numArr[3]*16)+numArr[2])*100/255; 
+        let num3 = ((numArr[4]*16)+numArr[5])*100/255;     
+        p1.innerHTML = `Hexcode of Color => ${str}`;
+        p2.innerHTML = `Red ${num1.toFixed(2)}% Blue ${num2.toFixed(2)}% Green ${num3.toFixed(2)}%`;
+    }
+    const bgcolor = function(){
+        let hexcode = randomColor();
+        colorPerGenerator(hexcode);
+        document.body.style.backgroundColor = hexcode;
+    }
+    let startColor;
+    document.querySelector(".start").addEventListener("click",function(){
+       startColor = setInterval(bgcolor, 500);
+     document.querySelector(".start").setAttribute('disabled','');
+    })
+    document.querySelector(".stop").addEventListener('click',function(){
+        clearInterval(startColor);
+     document.querySelector(".start").removeAttribute('disabled');
+
+    })
+
+</script>
+</html>

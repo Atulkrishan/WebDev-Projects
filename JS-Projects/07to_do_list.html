@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            height: 100vh;
+            background-color: #000;
+        }
+        .outer{
+            width : 300px;
+            padding: 25px;
+            color : white;
+            background-color: rgb(37, 36, 36);
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .add {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        input{
+            color: white;
+            background-color: #333333;
+            border : none;
+            outline: none;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #6200ea;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        ul{
+            list-style: none;
+            padding : 0px;
+        }
+        li {
+            background-color: #333333;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .del{
+            background-color: orangered;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+        li button:hover{
+            background-color: rgb(255, 0, 0);
+        }
+        li.completed{
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <h1 class="heading">To Do List</h1>
+        <div class="add">
+            <input type="text" id="addtask" placeholder="Write a new task...">
+            <button id="bt1">Add Task</button>
+        </div>
+        <ul class="list"></ul>
+    </div>
+</body>
+<script>
+  document.addEventListener('DOMContentLoaded',function(){
+    let ul = document.querySelector('ul');
+    let btn = document.querySelector('button'); 
+    let input = document.querySelector('input');
+    
+    let tasks = null;
+    
+    function retriveTasks(){
+      tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.forEach(task => renderTask(task));
+    }
+    
+    function renderTask(task){
+      createTask(task);
+      console.log(task);
+    }
+
+    retriveTasks(); 
+    
+    function clearInput(){
+      input.value = "";
+    }
+    
+    function getValue(){
+      return input.value;
+    }
+    
+    function validateInput(){
+      let task = getValue();
+      if(task.trim() == ''){
+        return false;
+      }
+      return true;
+    }
+    
+    function createTask(obj){
+      let inner = document.createElement('span');
+      let li = document.createElement('li');
+      inner.innerText = `${obj.text}`;
+      
+      let delBtn = document.createElement('button');
+      delBtn.setAttribute('class','del');
+      delBtn.innerText = 'Delete';
+
+      li.setAttribute('id',String(obj.id));
+
+      if(obj.completed){
+        li.setAttribute("class","completed");
+      }
+
+      li.appendChild(inner);
+      li.appendChild(delBtn);
+      ul.appendChild(li);
+    }
+    
+    function saveTask(arr){
+      localStorage.setItem('tasks',JSON.stringify(arr))
+    }
+    
+    btn.addEventListener('click',function(event){
+      if(!validateInput()){
+        return;
+      }
+      
+      let obj = {
+        id : Date.now(),
+        text : getValue(),
+        completed : false,
+      }
+      
+      createTask(obj);
+      
+      tasks.push(obj);
+      saveTask(tasks);
+      clearInput();
+    })
+    
+    ul.addEventListener('click',function(event){
+      let target = event.target;
+      
+      if(target.tagName == "LI"){
+        target.classList.toggle("completed");
+
+        let task = tasks.find(t => (t.id === Number(target.id)));
+        task.completed = !task.completed;
+        
+        // if(target.classList.contains("completed")){
+        //   target.classList.remove("completed");
+        // }
+        // else{
+        //   target.setAttribute('class',"completed");
+        // }
+      }
+      else if(target.className == 'del'){
+        target.parentElement.remove();
+        tasks = tasks.filter(t => (t.id !== Number(target.parentElement.id)));
+        event.stopPropagation();
+      }
+      saveTask(tasks);
+    });
+  });
+</script>
+</html>
